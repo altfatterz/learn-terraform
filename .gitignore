@@ -1,0 +1,4 @@
+.idea
+create-vm/sensitive.txt
+create-vm/key.pem
+.terraform
