@@ -9,23 +9,27 @@ Create a service principal and configure its access to Azure resources.
 A Service Principal is an application within Azure Active Directory with the authentication tokens Terraform needs to perform actions on your behalf.
 
 ```bash
-$ az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/<SUBSCRIPTION_ID>"
+$ az ad sp create-for-rbac --name="terraform-create-vm" --role="Contributor" --scopes="/subscriptions/<SUBSCRIPTION_ID>"
 ```
 
 Creating 'Contributor' role assignment under scope '/subscriptions/7ac2735b-bc31-4829-8923-57c346cd48ed'
 The output includes credentials that you must protect. Be sure that you do not include these credentials in your code or check the credentials into your source control. For more information, see https://aka.ms/azadsp-cli
+
+```json
 {
   "appId": "",
   "displayName": "",
   "password": "",
   "tenant": ""
 }
+```
 
 Return it back:
 
 ```bash
-$ a --display-name <display-name>
+$ az ad sp show --display-name <display-name>
 ```
+
 
 Useful commands:
 
