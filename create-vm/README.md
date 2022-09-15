@@ -27,9 +27,12 @@ The output includes credentials that you must protect. Be sure that you do not i
 Return it back:
 
 ```bash
-$ az ad sp show --display-name <display-name>
+$ az ad sp list --display-name <display-name>
 ```
 
+```bash
+$ terraform init
+```
 
 Useful commands:
 
@@ -38,6 +41,7 @@ $ terraform fmt
 $ terraform validate
 $ terraform plan
 ```
+
 
 Apply changes:
 
@@ -74,13 +78,17 @@ $ terraform output
 $ terraform output -raw tls_private_key > key.pem
 $ chmod 400 key.pem
 $ terraform output public_ip_address
-$ ssh -i id_rsa azureuser@<public_ip_address>
+$ ssh -i key.pem azureuser@<public_ip_address>
 $ azureuser@myVm:~$ lsb_release -a
 No LSB modules are available.
 Distributor ID:	Ubuntu
-Description:	Ubuntu 20.04.4 LTS
-Release:	20.04
-Codename:	focal
+Description:	Ubuntu 18.04.6 LTS
+Release:	18.04
+Codename:	bionic
+```
+
+```bash
+$ az vm list -g $(terraform output --raw resource_group_name) -o table
 ```
 
 

@@ -77,19 +77,13 @@ resource "tls_private_key" "example_ssh" {
 }
 
 # Create virtual machine
-resource "azurerm_linux_virtual_machine" "myVM" {
-  name                  = "myVM"
+resource "azurerm_linux_virtual_machine" "hosts" {
+  count                 = 2
+  name                  = var.vm_prefix+count.index
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.myNIC.id]
   size                  = "Standard_B1s"
-
-  os_disk {
-    name                 = "myOSDisk"
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
-
   # details figured out using: `az vm image list`
   source_image_reference {
     publisher = "Canonical"
@@ -98,12 +92,18 @@ resource "azurerm_linux_virtual_machine" "myVM" {
     version   = "latest"
   }
 
-  computer_name                   = var.hostname
+  os_disk {
+    name                 = "myosdisk${count.index}"
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  computer_name                   = var.vm_prefix+count.index
   admin_username                  = var.admin_username
   disable_password_authentication = true
 
   admin_ssh_key {
-    username   = var.admin_username
+    username   = admin_username
     public_key = tls_private_key.example_ssh.public_key_openssh
   }
 }

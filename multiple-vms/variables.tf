@@ -8,12 +8,12 @@ variable "resource_group_location" {
   description = "Location of the resource group."
 }
 
-variable "hostname" {
-  default     = "myVm"
-  description = "Specifies the Hostname which should be used for this Virtual Machine."
+variable "vm_prefix" {
+  default     = "vm"
+  description = "Specifies the VM prefix"
 }
 
 variable "admin_username" {
-  default     = "ubuntu"
+  default     = "azureuser"
   description = "The username of the local administrator used for the Virtual Machine."
 }
