@@ -7,32 +7,24 @@ resource "azurerm_resource_group" "rg" {
   location = var.resource_group_location
 }
 
-# Create virtual network
-resource "azurerm_virtual_network" "myVNet" {
+# Create a virtual network
+resource "azurerm_virtual_network" "vnet" {
   name                = "myVNet"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-# Create subnet
-resource "azurerm_subnet" "myterraformsubnet" {
-  name                 = "mySubnet"
+# Create a subnet
+resource "azurerm_subnet" "subnet" {
+  name                 = "subnet"
   resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.myVNet.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.1.0/24"]
 }
 
-# Create public IPs
-resource "azurerm_public_ip" "myterraformpublicip" {
-  name                = "myPublicIP"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  allocation_method   = "Dynamic"
-}
-
 # Create Network Security Group and rule
-resource "azurerm_network_security_group" "myNSG" {
+resource "azurerm_network_security_group" "nsg" {
   name                = "myNSG"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -50,40 +42,45 @@ resource "azurerm_network_security_group" "myNSG" {
   }
 }
 
+# Create public IPs
+resource "azurerm_public_ip" "ips" {
+  count               = 2
+  name                = "ip${count.index}"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method   = "Dynamic"
+}
+
 # Create network interface
-resource "azurerm_network_interface" "myNIC" {
-  name                = "myNIC"
+resource "azurerm_network_interface" "nics" {
+  count               = 2
+  name                = "nic${count.index}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
   ip_configuration {
-    name                          = "myNicConfiguration"
-    subnet_id                     = azurerm_subnet.myterraformsubnet.id
+    name                          = "nic_config"
+    subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.myterraformpublicip.id
+    public_ip_address_id          = element(azurerm_public_ip.ips.*.id, count.index)
   }
 }
 
-# Connect the security group to the network interface
-resource "azurerm_network_interface_security_group_association" "example" {
-  network_interface_id      = azurerm_network_interface.myNIC.id
-  network_security_group_id = azurerm_network_security_group.myNSG.id
-}
-
-# Create (and display) an SSH key
-resource "tls_private_key" "example_ssh" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
+resource azurerm_network_interface_security_group_association "nic_to_nsg" {
+  count                     = 2
+  network_interface_id      = element(azurerm_network_interface.nics.*.id, count.index)
+  network_security_group_id = element(azurerm_network_security_group.nsg.*.id, count.index)
 }
 
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "hosts" {
   count                 = 2
-  name                  = var.vm_prefix+count.index
+  name                  = "vm${count.index}"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
-  network_interface_ids = [azurerm_network_interface.myNIC.id]
+  network_interface_ids = [element(azurerm_network_interface.nics.*.id, count.index)]
   size                  = "Standard_B1s"
+
   # details figured out using: `az vm image list`
   source_image_reference {
     publisher = "Canonical"
@@ -98,12 +95,18 @@ resource "azurerm_linux_virtual_machine" "hosts" {
     storage_account_type = "Standard_LRS"
   }
 
-  computer_name                   = var.vm_prefix+count.index
+  computer_name                   = "vm${count.index}"
   admin_username                  = var.admin_username
   disable_password_authentication = true
 
   admin_ssh_key {
-    username   = admin_username
+    username   = var.admin_username
     public_key = tls_private_key.example_ssh.public_key_openssh
   }
+}
+
+# Create (and display) an SSH key
+resource "tls_private_key" "example_ssh" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
 }

@@ -8,12 +8,7 @@ variable "resource_group_location" {
   description = "Location of the resource group."
 }
 
-variable "vm_prefix" {
-  default     = "vm"
-  description = "Specifies the VM prefix"
-}
-
 variable "admin_username" {
-  default     = "azureuser"
+  default     = "ubuntu"
   description = "The username of the local administrator used for the Virtual Machine."
 }
