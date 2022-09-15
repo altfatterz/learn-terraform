@@ -29,3 +29,8 @@ $ terraform show
 $ terraform state list
 ```
 
+```bash
+$ terraform destroy
+$ az group delete --name $RG
+$ az group list -o table
+```

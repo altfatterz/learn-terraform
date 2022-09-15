@@ -49,7 +49,7 @@ resource "azurerm_public_ip" "ips" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
-  domain_name_label   = "kafka${count.index}"
+  domain_name_label   = "kafka${count.index}-${random_pet.rg-name.id}"
 }
 
 # Create network interface
