@@ -20,6 +20,9 @@ $ chmod 400 key.pem
 $ ssh -i key.pem ubuntu@<public_ip_address>
 ```
 
+```bash
+$ ssh -i key.pem ubuntu@kafka0.westeurope.cloudapp.azure.com
+```
 
 ```bash
 $ terraform show
