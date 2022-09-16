@@ -2,7 +2,19 @@
 $ terraform fmt
 $ terraform validate
 $ terraform plan
+```
+
+```bash
 $ terraform apply
+
+Outputs:
+
+fqdn = [
+  "dsnktmsu-0.westeurope.cloudapp.azure.com",
+  "dsnktmsu-1.westeurope.cloudapp.azure.com",
+]
+resource_group_name = "rg-superb-beagle"
+tls_private_key = <sensitive>
 ```
 
 ```bash
@@ -17,7 +29,7 @@ $ az vm list-ip-addresses -g $RG -o table
 ```bash
 $ terraform output -raw tls_private_key > key.pem
 $ chmod 400 key.pem
-$ ssh -i key.pem ubuntu@<public_ip_address>
+$ ssh -i key.pem ubuntu@<fqdn>
 ```
 
 ```bash

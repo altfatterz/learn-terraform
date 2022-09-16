@@ -2,6 +2,13 @@ resource "random_pet" "rg-name" {
   prefix = var.resource_group_name_prefix
 }
 
+resource "random_string" "fqdn" {
+  length  = 8
+  special = false
+  upper   = false
+  numeric = false
+}
+
 resource "azurerm_resource_group" "rg" {
   name     = random_pet.rg-name.id
   location = var.resource_group_location
@@ -49,7 +56,7 @@ resource "azurerm_public_ip" "ips" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
-  domain_name_label   = "kafka${count.index}-${random_pet.rg-name.id}"
+  domain_name_label   = "kafka-${count.index}-${random_string.fqdn.result}"
 }
 
 # Create network interface
@@ -76,7 +83,7 @@ resource azurerm_network_interface_security_group_association "nic_to_nsg" {
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "hosts" {
   count                 = 2
-  name                  = "vm${count.index}"
+  name                  = "kafka-${count.index}-${random_string.fqdn.result}"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [element(azurerm_network_interface.nics.*.id, count.index)]
@@ -96,7 +103,7 @@ resource "azurerm_linux_virtual_machine" "hosts" {
     storage_account_type = "Standard_LRS"
   }
 
-  computer_name                   = "vm${count.index}"
+  computer_name                   = "kafka-${count.index}"
   admin_username                  = var.admin_username
   disable_password_authentication = true
 
