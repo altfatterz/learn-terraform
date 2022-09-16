@@ -74,10 +74,10 @@ resource "azurerm_network_interface" "nics" {
   }
 }
 
-resource azurerm_network_interface_security_group_association "nic_to_nsg" {
+resource "azurerm_network_interface_security_group_association" "nic_to_nsg" {
   count                     = 2
   network_interface_id      = element(azurerm_network_interface.nics.*.id, count.index)
-  network_security_group_id = element(azurerm_network_security_group.nsg.*.id, count.index)
+  network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
 # Create virtual machine
