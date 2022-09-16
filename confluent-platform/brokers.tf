@@ -39,31 +39,6 @@ resource "azurerm_network_security_group" "kafka-nsg" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
-
-  security_rule {
-    name                       = "MDS & Embedded Kafka Rest"
-    priority                   = 1004
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "8090"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
-  security_rule {
-    name                       = "For Standalone REST Proxy"
-    priority                   = 1005
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "8082"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
 }
 
 # Create Public IPs for Kafka instances
@@ -105,7 +80,7 @@ resource "azurerm_linux_virtual_machine" "kafka" {
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [element(azurerm_network_interface.kafka-nics.*.id, count.index)]
-  size                  = "Standard_B1s"
+  size                  = var.vm_size
 
   # details figured out using: `az vm image list`
   source_image_reference {

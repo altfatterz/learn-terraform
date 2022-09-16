@@ -8,6 +8,11 @@ variable "resource_group_location" {
   description = "Location of the resource group."
 }
 
+variable "vm_size" {
+  default     = "Standard_B1s"
+  description = "VM size"
+}
+
 variable "admin_username" {
   default     = "ubuntu"
   description = "The username of the local administrator used for the Virtual Machine."
