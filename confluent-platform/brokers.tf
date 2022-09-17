@@ -80,7 +80,7 @@ resource "azurerm_linux_virtual_machine" "kafka" {
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [element(azurerm_network_interface.kafka-nics.*.id, count.index)]
-  size                  = var.vm_size
+  size                  = var.broker_vm_size
 
   # details figured out using: `az vm image list`
   source_image_reference {

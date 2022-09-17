@@ -9,8 +9,13 @@ variable "resource_group_location" {
 }
 
 variable "vm_size" {
-  default     = "Standard_B1s"
+  default     = "Standard_B2ms"
   description = "VM size"
+}
+
+variable "broker_vm_size" {
+  default     = "Standard_B4ms"
+  description = "Kafka Broker VM size"
 }
 
 variable "admin_username" {

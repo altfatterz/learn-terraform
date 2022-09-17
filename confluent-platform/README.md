@@ -70,3 +70,30 @@ $ terraform destroy
 $ az group delete --name $RG
 $ az group list -o table
 ```
+
+
+# Ansible
+
+```bash
+$ ansible-galaxy collection install git+https://github.com/confluentinc/cp-ansible.git
+
+Cloning into '/Users/altfatterz/.ansible/tmp/ansible-local-55213mp67c74w/tmprr8pvmz7/cp-ansiblecpjsc9ix'...
+remote: Enumerating objects: 567, done.
+remote: Counting objects: 100% (567/567), done.
+remote: Compressing objects: 100% (387/387), done.
+remote: Total 567 (delta 206), reused 299 (delta 125), pack-reused 0
+Receiving objects: 100% (567/567), 255.87 KiB | 9.48 MiB/s, done.
+Resolving deltas: 100% (206/206), done.
+Your branch is up to date with 'origin/7.2.1-post'.
+Starting galaxy collection install process
+Process install dependency map
+Starting collection install process
+Installing 'confluent.platform:7.2.1' to '/Users/altfatterz/.ansible/collections/ansible_collections/confluent/platform'
+Created collection for confluent.platform:7.2.1 at /Users/altfatterz/.ansible/collections/ansible_collections/confluent/platform
+confluent.platform:7.2.1 was installed successfully
+```
+
+```bash
+$ ansible-playbook -i hosts.yml confluent.platform.all
+```
+
