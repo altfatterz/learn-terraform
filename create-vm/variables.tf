@@ -9,7 +9,7 @@ variable "resource_group_location" {
 }
 
 variable "hostname" {
-  default     = "myVm"
+  default     = "myVM"
   description = "Specifies the Hostname which should be used for this Virtual Machine."
 }
 

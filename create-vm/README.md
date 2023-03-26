@@ -1,3 +1,16 @@
+```bash
+$ az version
+{
+  "azure-cli": "2.46.0",
+  "azure-cli-core": "2.46.0",
+  "azure-cli-telemetry": "1.0.8",
+  "extensions": {
+    "account": "0.2.2",
+    "spring-cloud": "3.0.1"
+  }
+}
+```
+
 https://learn.hashicorp.com/tutorials/terraform/azure-build?in=terraform/azure-get-started
 
 ```bash
@@ -5,7 +18,12 @@ $ az login
 $ az account show
 ```
 
-Create a service principal and configure its access to Azure resources.
+Two ways to authenticate Terraform to Azure
+
+1. Microsoft account
+2. Service account (better in CI/CD)
+
+Create a `service principal` and configure its access to Azure resources.
 A Service Principal is an application within Azure Active Directory with the authentication tokens Terraform needs to perform actions on your behalf.
 
 ```bash
@@ -24,10 +42,12 @@ The output includes credentials that you must protect. Be sure that you do not i
 }
 ```
 
-Return it back:
+In Azure Portal you can view this resource in `App registrations`
 
+Return it back:
 ```bash
-$ az ad sp list --display-name <display-name>
+$ az ad sp list --all -o table | grep terraform
+$ az ad sp list --display-name terraform-create-vm
 ```
 
 ```bash
@@ -41,7 +61,6 @@ $ terraform fmt
 $ terraform validate
 $ terraform plan
 ```
-
 
 Apply changes:
 
