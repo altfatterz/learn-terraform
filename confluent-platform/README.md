@@ -1,3 +1,4 @@
+
 ```bash
 $ terraform fmt
 $ terraform validate
@@ -97,3 +98,6 @@ confluent.platform:7.2.1 was installed successfully
 $ ansible-playbook -i hosts.yml confluent.platform.all
 ```
 
+Resources:
+
+1. Confluent Platform on Azure: https://github.com/osodevops/terraform-azure-confluent-platform

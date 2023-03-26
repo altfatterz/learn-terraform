@@ -11,8 +11,6 @@ $ az version
 }
 ```
 
-https://learn.hashicorp.com/tutorials/terraform/azure-build?in=terraform/azure-get-started
-
 ```bash
 $ az login
 $ az account show
@@ -50,6 +48,8 @@ $ az ad sp list --all -o table | grep terraform
 $ az ad sp list --display-name terraform-create-vm
 ```
 
+To pull down the provider plugins you need to run this command:
+
 ```bash
 $ terraform init
 ```
@@ -59,13 +59,13 @@ Useful commands:
 ```bash
 $ terraform fmt
 $ terraform validate
-$ terraform plan
+$ terraform plan -out tfplan
 ```
 
 Apply changes:
 
 ```bash
-$ terraform apply
+$ terraform apply tfplan
 ```
 
 Inspect the current state:
@@ -73,18 +73,6 @@ Inspect the current state:
 ```bash
 $ terraform show
 $ terraform state list
-```
-
-Destroy Infrastructure
-
-```bash
-$ terraform destroy
-```
-
-Apply overriding the default resource group name.
-
-```bash
-$ terraform apply -var "resource_group_name=myNewResourceGroupName"
 ```
 
 Query the output:
@@ -97,8 +85,8 @@ $ terraform output
 $ terraform output -raw tls_private_key > key.pem
 $ chmod 400 key.pem
 $ terraform output public_ip_address
-$ ssh -i key.pem azureuser@<public_ip_address>
-$ azureuser@myVm:~$ lsb_release -a
+$ ssh -i key.pem ubuntu@<public_ip_address>
+$ ubuntu@myVM:~$ lsb_release -a
 No LSB modules are available.
 Distributor ID:	Ubuntu
 Description:	Ubuntu 18.04.6 LTS
@@ -106,13 +94,33 @@ Release:	18.04
 Codename:	bionic
 ```
 
+List VM names:
+
 ```bash
 $ az vm list -g $(terraform output --raw resource_group_name) -o table
 ```
 
+List RG names:
+
+```bash
+$ az group list -o table
+```
+
+Apply overriding the default resource group name.
+
+```bash
+$ terraform apply -var "resource_group_name=myNewResourceGroupName"
+```
+
+### Destroy Infrastructure
+
+```bash
+$ terraform destroy
+```
+
 
 Resources:
-1. Confluent Platform on Azure: https://github.com/osodevops/terraform-azure-confluent-platform
-2. Quickstart: https://docs.microsoft.com/en-us/azure/developer/terraform/create-linux-virtual-machine-with-infrastructure
+1. Quickstart: https://docs.microsoft.com/en-us/azure/developer/terraform/create-linux-virtual-machine-with-infrastructure
+2. Hashicorp: https://learn.hashicorp.com/tutorials/terraform/azure-build?in=terraform/azure-get-started
 
 
