@@ -1,0 +1,36 @@
+{
+  "builders": [{
+    "type": "azure-arm",
+
+    "client_id": "0289c3f1-9cc1-40c0-8718-ad8b8048bb2f",
+    "client_secret": "L~i8Q~taTtTknm.NKzytASy0WFTUd4j.egzDqbvH",
+    "tenant_id": "f3730dbf-6176-4a2e-93c0-f762af479d33",
+
+    "subscription_id": "7ac2735b-bc31-4829-8923-57c346cd48ed",
+
+    "managed_image_resource_group_name": "myResourceGroup",
+    "managed_image_name": "myKafkaBaseImage",
+
+    "os_type": "Linux",
+    "image_publisher": "canonical",
+    "image_offer": "0001-com-ubuntu-server-jammy",
+    "image_sku": "22_04-lts",
+
+    "azure_tags": {
+      "dept": "Engineering",
+      "task": "Image deployment"
+    },
+
+    "location": "westeurope",
+    "vm_size": "Standard_B2s"
+  }],
+  "provisioners": [{
+    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'",
+    "inline": [
+      "apt-get update",
+      "apt-get -y install openjdk-17-jdk"
+    ],
+    "inline_shebang": "/bin/sh -x",
+    "type": "shell"
+  }]
+}
